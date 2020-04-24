@@ -2,7 +2,7 @@
 
 ## Welcome to websocket-sharp! ##
 
-fork from https://github.com/sta/websocket-sharp
+fork from https://github.com/sta/websocket-sharp <br/>
 fork time 2020.04.23
 
 * change the project to netstandard2.0 and NET35
@@ -18,7 +18,7 @@ fork time 2020.04.23
 * add `event HttpServer.OnAllHttpMethod(object sender,HttpRequestEventArgs e)` (occurs when the server receives any HTTP request)
 * change `Console.WriteLine` to `System.Diagnostics.Debug.WriteLine`
 
-websocket-sharp supports:
+## websocket-sharp supports: ##
 
 - [RFC 6455](#supported-websocket-specifications)
 - [WebSocket Client](#websocket-client) and [Server](#websocket-server)

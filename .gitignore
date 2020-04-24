@@ -13,3 +13,4 @@ obj
 *.userprefs
 UpgradeLog*.*
 /packages
+/.vs
