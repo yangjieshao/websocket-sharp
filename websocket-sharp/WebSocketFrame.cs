@@ -833,7 +833,7 @@ Extended Payload Length: {7}
 
     public void Print (bool dumped)
     {
-      Console.WriteLine (dumped ? dump (this) : print (this));
+        Console.WriteLine (dumped ? dump (this) : print (this));
     }
 
     public string PrintToString (bool dumped)

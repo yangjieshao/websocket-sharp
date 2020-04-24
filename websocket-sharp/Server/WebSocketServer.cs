@@ -55,7 +55,11 @@ namespace WebSocketSharp.Server
   /// This class can provide multiple WebSocket services.
   /// </remarks>
   public class WebSocketServer
-  {
+    {
+    /// <summary>
+    /// occurs when the server add new websocket client
+    /// </summary>
+    public event AddNewWebSocketHander OnAddNewWebSocket;
     #region Private Fields
 
     private System.Net.IPAddress               _address;
@@ -833,13 +837,17 @@ namespace WebSocketSharp.Server
       if (path.IndexOfAny (new[] { '%', '+' }) > -1)
         path = HttpUtility.UrlDecode (path, Encoding.UTF8);
 
-      WebSocketServiceHost host;
-      if (!_services.InternalTryGetServiceHost (path, out host)) {
-        context.Close (HttpStatusCode.NotImplemented);
-        return;
-      }
 
-      host.StartSession (context);
+      if (_services.InternalTryGetServiceHost(path, out WebSocketServiceHost host))
+      {
+          host.StartSession(context);
+      }
+      else
+      {
+          context.WebSocket.InternalAccept();
+      }
+      
+      OnAddNewWebSocket?.Invoke(context.WebSocket);
     }
 
     private void receiveRequest ()

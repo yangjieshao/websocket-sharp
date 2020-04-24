@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>NET35;netstandard2.0</TargetFrameworks>
+    <RootNamespace>WebSocketSharp</RootNamespace>
+    <Version>2020.04.23.2</Version>
+    <Authors>yangjieshao</Authors>
+    <Company>Wenhe</Company>
+    <Description>
+fork from https://github.com/sta/websocket-sharp
+fork time 2020.04.23
+change the project to netstandard2.0 and NET35
+remove Obsolete of Ext.WriteContent
+remove AssemblyInfo.cs
+websocket route changed to non mandatory (connection can be initiated without route)
+remove AssemblyOriginatorKeyFile
+add Ext.ReturnFile(this HttpListenerResponse httpListenerResponse, string filePath)
+add public delegate void AddNewWebSocketHander(WebSocket webSocket)
+add event WebSocketServer.OnAddNewWebSocket(WebSocket webSocket) (occurs when the server add new websocket client)
+add event HttpServer.OnAddNewWebSocket(WebSocket webSocket) (occurs when the server add new websocket client)
+add event HttpServer.OnAllHttpMethod(object sender,HttpRequestEventArgs e) (occurs when the server receives any HTTP request)
+change Console.WriteLine to System.Diagnostics.Debug.WriteLine
+    </Description>
+    <NoWarn>1701;1702;NU5100;IDE0034;IDE1006;IDE0018;IDE0044;IDE0039;IDE0059;S112;S108;S2933;S3264;S2486;S3358;CS0168;C1163;C108</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>.\Websocket-NETStandard.xml</DocumentationFile>
+    <LangVersion>7.1</LangVersion>
+    <RepositoryUrl>https://github.com/yangjieshao/shadowsocksr-csharp</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|NET35|AnyCPU'">
+    <CodeAnalysisRuleSet />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|NET35|AnyCPU'">
+    <CodeAnalysisRuleSet />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Websocket-NETStandard.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+</Project>

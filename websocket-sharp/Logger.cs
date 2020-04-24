@@ -190,7 +190,7 @@ namespace WebSocketSharp
     private static void defaultOutput (LogData data, string path)
     {
       var log = data.ToString ();
-      Console.WriteLine (log);
+      System.Diagnostics.Debug.WriteLine (log);
       if (path != null && path.Length > 0)
         writeToFile (log, path);
     }
@@ -208,13 +208,21 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           data = new LogData (LogLevel.Fatal, new StackFrame (0, true), ex.Message);
-          Console.WriteLine (data.ToString ());
+          System.Diagnostics.Debug.WriteLine (data.ToString ());
         }
       }
     }
 
     private static void writeToFile (string value, string path)
     {
+      if(!string.IsNullOrWhiteSpace(path))
+      {
+        FileInfo fileInfo = new FileInfo(path);
+        if(!fileInfo.Directory.Exists)
+        {
+            fileInfo.Directory.Create();
+        }
+      }
       using (var writer = new StreamWriter (path, true))
       using (var syncWriter = TextWriter.Synchronized (writer))
         syncWriter.WriteLine (value);

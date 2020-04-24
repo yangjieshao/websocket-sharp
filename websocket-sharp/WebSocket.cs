@@ -55,20 +55,26 @@ using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp
 {
-  /// <summary>
-  /// Implements the WebSocket interface.
-  /// </summary>
-  /// <remarks>
-  ///   <para>
-  ///   This class provides a set of methods and properties for two-way
-  ///   communication using the WebSocket protocol.
-  ///   </para>
-  ///   <para>
-  ///   The WebSocket protocol is defined in
-  ///   <see href="http://tools.ietf.org/html/rfc6455">RFC 6455</see>.
-  ///   </para>
-  /// </remarks>
-  public class WebSocket : IDisposable
+    /// <summary>
+    /// occurs when the server add new websocket client
+    /// </summary>
+    /// <param name="webSocket"></param>
+    public delegate void AddNewWebSocketHander(WebSocket webSocket);
+
+    /// <summary>
+    /// Implements the WebSocket interface.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   This class provides a set of methods and properties for two-way
+    ///   communication using the WebSocket protocol.
+    ///   </para>
+    ///   <para>
+    ///   The WebSocket protocol is defined in
+    ///   <see href="http://tools.ietf.org/html/rfc6455">RFC 6455</see>.
+    ///   </para>
+    /// </remarks>
+    public class WebSocket : IDisposable
   {
     #region Private Fields
 

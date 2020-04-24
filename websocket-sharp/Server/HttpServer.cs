@@ -780,6 +780,16 @@ namespace WebSocketSharp.Server
     /// </summary>
     public event EventHandler<HttpRequestEventArgs> OnTrace;
 
+    /// <summary>
+    /// Occurs when the server receives any HTTP request.
+    /// </summary>
+    public event EventHandler<HttpRequestEventArgs> OnAllHttpMethod;
+
+
+    /// <summary>
+    /// Ôö¼ÓÐÂWebsocketÁ¬½Ó
+    /// </summary>
+    public event AddNewWebSocketHander OnAddNewWebSocket;
     #endregion
 
     #region Private Methods
@@ -885,6 +895,12 @@ namespace WebSocketSharp.Server
     private void processRequest (HttpListenerContext context)
     {
       var method = context.Request.HttpMethod;
+      bool hadMethoded = false;
+      if (OnAllHttpMethod != null)
+      {
+          hadMethoded = true;
+          OnAllHttpMethod(this, new HttpRequestEventArgs(context, _docRootPath));
+      }
       var evt = method == "GET"
                 ? OnGet
                 : method == "HEAD"
@@ -904,9 +920,14 @@ namespace WebSocketSharp.Server
                               : null;
 
       if (evt != null)
-        evt (this, new HttpRequestEventArgs (context, _docRootPath));
-      else
-        context.Response.StatusCode = 501; // Not Implemented
+      {
+          hadMethoded = true;
+          evt(this, new HttpRequestEventArgs(context, _docRootPath));
+      }
+      if (!hadMethoded)
+      {
+          context.Response.StatusCode = 501; // Not Implemented
+      }
 
       context.Response.Close ();
     }
@@ -923,13 +944,15 @@ namespace WebSocketSharp.Server
       if (path.IndexOfAny (new[] { '%', '+' }) > -1)
         path = HttpUtility.UrlDecode (path, Encoding.UTF8);
 
-      WebSocketServiceHost host;
-      if (!_services.InternalTryGetServiceHost (path, out host)) {
-        context.Close (HttpStatusCode.NotImplemented);
-        return;
+      if (_services.InternalTryGetServiceHost(path, out WebSocketServiceHost host))
+      {
+          host.StartSession(context);
       }
-
-      host.StartSession (context);
+      else
+      {
+          context.WebSocket.InternalAccept();
+      }
+      OnAddNewWebSocket?.Invoke(context.WebSocket);
     }
 
     private void receiveRequest ()

@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 /*
  * HttpRequestEventArgs.cs
  *
