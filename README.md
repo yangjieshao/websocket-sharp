@@ -2,6 +2,22 @@
 
 ## Welcome to websocket-sharp! ##
 
+fork from https://github.com/sta/websocket-sharp
+fork time 2020.04.23
+
+* change the project to netstandard2.0 and NET35
+* change dll name to Websocket-NETStandard
+* remove `Obsolete` of `Ext.WriteContent`
+* remove AssemblyInfo.cs
+* websocket route changed to non mandatory (connection can be initiated without route)
+* remove AssemblyOriginatorKeyFile
+* add `Ext.ReturnFile(this HttpListenerResponse httpListenerResponse, string filePath)`
+* add `public delegate void AddNewWebSocketHander(WebSocket webSocket)`
+* add `event WebSocketServer.OnAddNewWebSocket(WebSocket webSocket)` (occurs when the server add new websocket client)
+* add `event HttpServer.OnAddNewWebSocket(WebSocket webSocket)` (occurs when the server add new websocket client)
+* add `event HttpServer.OnAllHttpMethod(object sender,HttpRequestEventArgs e)` (occurs when the server receives any HTTP request)
+* change `Console.WriteLine` to `System.Diagnostics.Debug.WriteLine`
+
 websocket-sharp supports:
 
 - [RFC 6455](#supported-websocket-specifications)
