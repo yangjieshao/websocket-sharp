@@ -51,11 +51,9 @@ using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
+using System.Runtime.InteropServices;
 using System.Text;
 using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
-using WebSocketSharp.Server;
 
 namespace WebSocketSharp
 {
@@ -2225,7 +2223,6 @@ namespace WebSocketSharp
     ///   <paramref name="content"/> is <see langword="null"/>.
     ///   </para>
     /// </exception>
-    [Obsolete ("This method will be removed.")]
     public static void WriteContent (
       this HttpListenerResponse response, byte[] content
     )
@@ -2254,6 +2251,195 @@ namespace WebSocketSharp
       output.Close ();
     }
 
-    #endregion
-  }
+
+        /// <summary>
+        /// Default Doc
+        /// </summary>
+        public static string[] DefaultDocuments { get; } =
+        {
+            ".\\index.html",
+            ".\\index.htm",
+            ".\\default.html",
+            ".\\default.htm"
+        };
+
+        /// <summary>
+        /// Mime Type conversion table
+        /// </summary>
+        public static IDictionary<string, string> MimeTypeMappings { get; } =
+            new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+            {
+                #region extension to MIME type list
+                {".mp3", "audio/mpeg"},
+                {".mpeg", "video/mpeg"},
+                {".mpg", "video/mpeg"},
+                {".wmv", "video/x-ms-wmv"},
+                {".asf", "video/x-ms-asf"},
+                {".asx", "video/x-ms-asf"},
+                {".avi", "video/x-msvideo"},
+                {".flv", "video/x-flv"},
+                {".mng", "video/x-mng"},
+                {".mov", "video/quicktime"},
+                {".css", "text/css"},
+                {".htc", "text/x-component"},
+                {".mml", "text/mathml"},
+                {".txt", System.Net.Mime.MediaTypeNames.Text.Plain},
+                {".xml",  System.Net.Mime.MediaTypeNames.Text.Xml},
+                {".rss", System.Net.Mime.MediaTypeNames.Text.Xml},
+                {".htm", System.Net.Mime.MediaTypeNames.Text.Html},
+                {".html", System.Net.Mime.MediaTypeNames.Text.Html},
+                {".shtml", System.Net.Mime.MediaTypeNames.Text.Html},
+                {".richtext", System.Net.Mime.MediaTypeNames.Text.RichText},
+                {".bin", "application/octet-stream"},
+                {".cco", "application/x-cocoa"},
+                {".crt", "application/x-x509-ca-cert"},
+                {".deb", "application/octet-stream"},
+                {".der", "application/x-x509-ca-cert"},
+                {".dll", "application/octet-stream"},
+                {".dmg", "application/octet-stream"},
+                {".ear", "application/java-archive"},
+                {".eot", "application/octet-stream"},
+                {".exe", "application/octet-stream"},
+                {".hqx", "application/mac-binhex40"},
+                {".jardiff", "application/x-java-archive-diff"},
+                {".jnlp", "application/x-java-jnlp-file"},
+                {".js", "application/x-javascript"},
+                {".img", "application/octet-stream"},
+                {".iso", "application/octet-stream"},
+                {".jar", "application/java-archive"},
+                {".msi", "application/octet-stream"},
+                {".msm", "application/octet-stream"},
+                {".msp", "application/octet-stream"},
+                {".pdb", "application/x-pilot"},
+                {".pem", "application/x-x509-ca-cert"},
+                {".pl", "application/x-perl"},
+                {".pm", "application/x-perl"},
+                {".prc", "application/x-pilot"},
+                {".ra", "audio/x-realaudio"},
+                {".rar", "application/x-rar-compressed"},
+                {".rpm", "application/x-redhat-package-manager"},
+                {".sit", "application/x-stuffit"},
+                {".swf", "application/x-shockwave-flash"},
+                {".tcl", "application/x-tcl"},
+                {".tk", "application/x-tcl"},
+                {".run", "application/x-makeself"},
+                {".sea", "application/x-sea"},
+                {".war", "application/java-archive"},
+                {".xpi", "application/x-xpinstall"},
+                {".json", "application/json"},
+                {".rtf", System.Net.Mime.MediaTypeNames.Application.Rtf},
+                {".soap", System.Net.Mime.MediaTypeNames.Application.Soap},
+                {".pdf", System.Net.Mime.MediaTypeNames.Application.Pdf},
+                {".zip", System.Net.Mime.MediaTypeNames.Application.Zip},
+                {".ico", "image/x-icon"},
+                {".jng", "image/x-jng"},
+                {".png", "image/png"},
+                {".wbmp", "image/vnd.wap.wbmp"},
+                {".jpeg", System.Net.Mime.MediaTypeNames.Image.Jpeg},
+                {".jpg", System.Net.Mime.MediaTypeNames.Image.Jpeg},
+                {".gif", System.Net.Mime.MediaTypeNames.Image.Gif},
+                {".tiff", System.Net.Mime.MediaTypeNames.Image.Tiff},
+
+                #endregion
+            };
+
+        /// <summary>
+        /// Return File 
+        /// </summary>
+        /// <param name="httpListenerResponse"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static bool ReturnFile(this HttpListenerResponse httpListenerResponse, string filePath)
+        {
+            bool result = false;
+
+            if (httpListenerResponse != null)
+            {
+#if NETSTANDARD2_0
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath.Replace("/", "\\"));
+                }
+                else
+                {
+                    filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
+                }
+#else
+                filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath.Replace("/", "\\"));
+#endif
+
+                if (filePath.StartsWith("\\"))
+                {
+                    filePath = "." + filePath;
+                }
+                if (string.IsNullOrEmpty(filePath)
+                    || Directory.Exists(filePath))
+                {
+                    foreach (string indexFile in DefaultDocuments)
+                    {
+                        if (File.Exists(indexFile))
+                        {
+                            filePath = System.IO.Path.Combine(filePath, indexFile);
+                            break;
+                        }
+                    }
+                }
+                if (File.Exists(filePath))
+                {
+                    result = WriteFile(httpListenerResponse, filePath);
+                }
+            }
+            return result;
+        }
+
+        private static bool WriteFile(HttpListenerResponse response, string filePath)
+        {
+            bool result = false;
+            string mime;
+            response.ContentType = MimeTypeMappings.TryGetValue(Path.GetExtension(filePath), out mime)
+                   ? mime
+                   : System.Net.Mime.MediaTypeNames.Application.Octet;
+            try
+            {
+                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    response.ContentLength64 = fs.Length;
+                    response.SendChunked = false;
+                    if (response.ContentType != null)
+                    {
+                        if (!response.ContentType.StartsWith("text/")
+                            && !response.ContentType.StartsWith("image/")
+                            && !response.ContentType.StartsWith("application/json"))
+                        {
+                            response.Headers.Add("Last-Modified", File.GetLastWriteTime(filePath).ToString("r"));
+                            response.Headers.Add("Content-disposition", "attachment; filename=" + (new FileInfo(filePath)).Name);
+                        }
+                        else
+                        {
+                            response.ContentType += ";charset=utf-8";
+                        }
+                    }
+                    byte[] buffer = new byte[1024 * 64];
+                    int nbytes;
+
+                    while ((nbytes = fs.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        response.OutputStream.Write(buffer, 0, nbytes);
+                    }
+
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.StatusDescription = "OK";
+                    response.OutputStream.Flush();
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            }
+            return result;
+        }
+        #endregion
+    }
 }
