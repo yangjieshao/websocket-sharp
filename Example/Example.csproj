@@ -36,9 +36,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="notify-sharp, Version=0.4.0.0, Culture=neutral, PublicKeyToken=2df29c54e245917a">
-      <Package>notify-sharp</Package>
-    </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -47,5 +44,11 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Notifier.cs" />
     <Compile Include="NotificationMessage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\websocket-sharp\Websocket-NETStandard.csproj">
+      <Project>{5c754fac-9dcf-446f-b916-a76bd6526751}</Project>
+      <Name>Websocket-NETStandard</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

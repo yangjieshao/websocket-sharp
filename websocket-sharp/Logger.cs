@@ -215,7 +215,7 @@ namespace WebSocketSharp
 
     private static void writeToFile (string value, string path)
     {
-      if(!string.IsNullOrWhiteSpace(path))
+      if(!string.IsNullOrEmpty(path))
       {
         FileInfo fileInfo = new FileInfo(path);
         if(!fileInfo.Directory.Exists)

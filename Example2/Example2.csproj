@@ -48,4 +48,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\websocket-sharp\Websocket-NETStandard.csproj">
+      <Project>{5c754fac-9dcf-446f-b916-a76bd6526751}</Project>
+      <Name>Websocket-NETStandard</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
